@@ -35,14 +35,12 @@ cat <<EOF > /usr/share/nginx/html/index.html
 
     function getFormattedTimestamp() {
         var now = new Date();
-        var localTime = new Date(now.getTime());
-
-        var year = localTime.getFullYear();
-        var month = localTime.getMonth() + 1;
-        var day = localTime.getDate();
-        var hour = localTime.getHours();
-        var minute = localTime.getMinutes();
-        var second = localTime.getSeconds();
+        var year = now.getFullYear();
+        var month = now.getMonth() + 1;
+        var day = now.getDate();
+        var hour = now.getHours();
+        var minute = now.getMinutes();
+        var second = now.getSeconds();
         
         return `$${year}.$${month}.$${day}.$${hour}:$${minute}:$${second}`;
     }
@@ -53,15 +51,10 @@ cat <<EOF > /usr/share/nginx/html/index.html
 
     const sessionIds = Array.from({length: 10}, () => generateRandomString(10));
     const userIps = Array.from({length: 10}, () => generateRandomIP());
-    
-    /*
     const pageUrls = [
     '/', '/electronics', '/product/', '/cart', '/checkout', '/login', '/register', '/search?q=keyword', '/support', '/promotions'
     ];
-    const pageCategories = ['mens_clothing', 'womens_clothing', 'accessories', 'outerwear', footwear];
-    const durations = Array.from({length: 10}, () => Math.floor(Math.random() * 5000));
-    const actionsCounts = Array.from({length: 10}, () => Math.floor(Math.random() * 100));
-    */
+    const pageCategories = ['mens_clothing', 'womens_clothing', 'accessories', 'outerwear', 'footwear'];
 
     document.addEventListener('DOMContentLoaded', function() {
         const button = document.getElementById('buyButton');
@@ -69,12 +62,8 @@ cat <<EOF > /usr/share/nginx/html/index.html
             // 각 필드별로 독립적인 무작위 인덱스를 생성
             const sessionIdIndex = Math.floor(Math.random() * sessionIds.length);
             const userIpIndex = Math.floor(Math.random() * userIps.length);
-            /*
             const pageUrlIndex = Math.floor(Math.random() * pageUrls.length);
             const pageCategoryIndex = Math.floor(Math.random() * pageCategories.length);
-            const durationIndex = Math.floor(Math.random() * durations.length);
-            const actionsCountIndex = Math.floor(Math.random() * actionsCounts.length);
-            */
 
             fetch('/log-click', {
                 method: 'POST',
@@ -86,17 +75,14 @@ cat <<EOF > /usr/share/nginx/html/index.html
                     timestamp: getFormattedTimestamp(),
                     sessionId: sessionIds[sessionIdIndex],
                     ip: userIps[userIpIndex],
-                    /*
                     pageUrl: pageUrls[pageUrlIndex],
                     pageCategory: pageCategories[pageCategoryIndex],
-                    duration: durations[durationIndex],
-                    actionsCount: actionsCounts[actionsCountIndex]
-                    */
                     })
             })
             .then(response => {
                 if (response.ok) {
                     console.log("Event logged successfully");
+                    console.log(getFormattedTimestamp(), sessionIds[sessionIdIndex], userIps[userIpIndex], pageUrls[pageUrlIndex], pageCategories[pageCategoryIndex]);
                 } else {
                     console.error("Failed to log event");
                 }
